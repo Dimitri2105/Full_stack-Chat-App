@@ -1,0 +1,31 @@
+{
+  "name": "full-stack-chat-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dimitri2105/Full_stack-Chat-App.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dimitri2105/Full_stack-Chat-App/issues"
+  },
+  "homepage": "https://github.com/Dimitri2105/Full_stack-Chat-App#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "body": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mysql2": "^3.2.4",
+    "nodemon": "^2.0.22",
+    "parser": "^0.1.4",
+    "sequelize": "^6.31.1"
+  }
+}
