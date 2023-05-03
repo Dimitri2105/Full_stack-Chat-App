@@ -11,7 +11,9 @@ const userRoute = require('./routes/userRoutes')
 
 const app = express()
 
-app.use(cors())
+app.use(cors({
+    origin: '*',
+}));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}))

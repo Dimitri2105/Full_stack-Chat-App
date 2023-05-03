@@ -20,6 +20,12 @@ function saveToStorage(e) {
     .post(`http://localhost:8000/user/signup`, obj)
     .then(response =>{
         console.log(response.data)
+        if (response.data.message === 'User already exists') {
+            window.alert('User already exists, Please Login');
+        } else {
+            window.alert('Successfully signed up');
+        }
+        
     })
     .catch((error) => {
         document.body.innerHTML =
