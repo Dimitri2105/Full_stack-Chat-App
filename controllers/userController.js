@@ -1,5 +1,7 @@
 const User = require("../modals/userModal");
 const bcrypt = require("bcrypt");
+const jst = require("jsonwebtoken")
+
 
 exports.signup = async (req, res, next) => {
   const name = req.body.userAdd;
@@ -34,7 +36,11 @@ exports.signup = async (req, res, next) => {
       .json({ message: "Something Went wrong while creating user" });
   }
 };
-
+function generateToken(id,username){
+    return jst.sign(
+        {id,username},
+        process.env.TOKEN_SECRET)
+}
 exports.logIn = async (req, res, next) => {
   const email = req.body.emailAdd;
   const password = req.body.passwordAdd;
@@ -42,13 +48,13 @@ exports.logIn = async (req, res, next) => {
     const user = await User.findOne({ where: { email: email } });
 
     if (!user) {
-      res.status(400).json({ message: "User not found" });
+      res.status(404).json({ message: "User not found" });
     } else {
       bcrypt.compare(password, user.password, (err, result) => {
         if (result === true) {
-          res.status(200).json({ message: "User login successfull" });
+          res.status(200).json({ message: "User login successfull",token : generateToken({id:user.id , username :user.userName})});
         } else {
-          res.status(400).json({ message: "User not authorized" });
+          res.status(401).json({ message: "User not authorized" });
         }
       });
     }
