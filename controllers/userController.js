@@ -14,7 +14,7 @@ exports.signup = async (req, res, next) => {
   try {
     const existingUser = await User.findOne({ where: { email: email } });
     if (existingUser) {
-        return res.json({ message: "User already exists" });
+      return res.json({ message: "User already exists" });
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -32,5 +32,28 @@ exports.signup = async (req, res, next) => {
     res
       .status(500)
       .json({ message: "Something Went wrong while creating user" });
+  }
+};
+
+exports.logIn = async (req, res, next) => {
+  const email = req.body.emailAdd;
+  const password = req.body.passwordAdd;
+  try {
+    const user = await User.findOne({ where: { email: email } });
+
+    if (!user) {
+      res.status(400).json({ message: "User not found" });
+    } else {
+      bcrypt.compare(password, user.password, (err, result) => {
+        if (result === true) {
+          res.status(200).json({ message: "User login successfull" });
+        } else {
+          res.status(400).json({ message: "User not authorized" });
+        }
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error });
   }
 };
