@@ -37,15 +37,13 @@ async function addChatMessagesOnscreen() {
       `http://localhost:8000/user/send-message`,
       { headers: { Authorization: token } }
     );
-    const chatContainer = document.createElement("div");
-    chatContainer.className = "chat-container";
-
     const userAllMessages = userMessage.data.userMessage;
-
-    userAllMessages.forEach((message, index) => {
+    chatMessage.innerHTML = "";
+    
+    userAllMessages.forEach((message) => {
       const messageDiv = document.createElement('div');
       messageDiv.className = "form-control"
-      messageDiv.innerHTML = `<b>${message.user.userName}:</b> ${message.chatMessage}`;
+      messageDiv.innerHTML = `<b>${message.user.userName} : </b> ${message.chatMessage}`;
       chatMessage.appendChild(messageDiv);
     });
 } catch (error) {
