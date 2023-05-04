@@ -52,7 +52,7 @@ exports.logIn = async (req, res, next) => {
     } else {
       bcrypt.compare(password, user.password, (err, result) => {
         if (result === true) {
-          res.status(200).json({ message: "User login successfull",token : generateToken({id:user.id , username :user.userName})});
+          res.status(200).json({ message: "User login successfull",token : generateToken({id:user.id , username :user.userName}) , username : user.userName});
         } else {
           res.status(401).json({ message: "User not authorized" });
         }

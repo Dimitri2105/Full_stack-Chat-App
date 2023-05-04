@@ -19,8 +19,9 @@ function saveToStorage(e) {
     .then(response =>{
         console.log(response.data)
         alert('Successfull')
-        // localStorage.setItem('token',response.data.token)
-        // window.location.href="../expense/expense.html"
+        localStorage.setItem('token',response.data.token)
+        localStorage.setItem('userName',response.data.username)
+        window.location.href="../chat/chat.html"
     })
     .catch((error) => {
         document.body.innerHTML =
