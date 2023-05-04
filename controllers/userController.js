@@ -2,6 +2,7 @@ const User = require("../modals/userModal");
 const bcrypt = require("bcrypt");
 const jst = require("jsonwebtoken")
 
+let activeUsers = {}
 
 exports.signup = async (req, res, next) => {
   const name = req.body.userAdd;
@@ -41,6 +42,7 @@ function generateToken(id,username){
         {id,username},
         process.env.TOKEN_SECRET)
 }
+
 exports.logIn = async (req, res, next) => {
   const email = req.body.emailAdd;
   const password = req.body.passwordAdd;
@@ -52,6 +54,8 @@ exports.logIn = async (req, res, next) => {
     } else {
       bcrypt.compare(password, user.password, (err, result) => {
         if (result === true) {
+          activeUsers[user.id] = user.userName
+          console.log("ACTIVE USER  are >>>>>>", activeUsers)
           res.status(200).json({ message: "User login successfull",token : generateToken({id:user.id , username :user.userName}) , username : user.userName});
         } else {
           res.status(401).json({ message: "User not authorized" });
@@ -63,3 +67,15 @@ exports.logIn = async (req, res, next) => {
     res.status(500).json({ error: error });
   }
 };
+
+exports.getAllUsers = async(req,res,next) =>{
+  console.log("inside logged users >>>>>")
+  try {
+    res.status(200).json({ activeUsers: Object.values(activeUsers)});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Unable to fetch users" });
+  }
+ 
+
+}
