@@ -7,6 +7,10 @@ const sequelize = require('./database/database')
 dotenv.config()
 
 const userRoute = require('./routes/userRoutes')
+const chatRoute = require('./routes/chatRoutes')
+
+const User = require('./modals/userModal')
+const Chat = require('./modals/chatModal')
 
 
 const app = express()
@@ -22,6 +26,11 @@ app.use(express.static(path.join(__dirname, 'views')));
 
 
 app.use(userRoute)
+app.use(chatRoute)
+
+
+User.hasMany(Chat)
+Chat.belongsTo(User)
 
 sequelize
 .sync()

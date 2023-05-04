@@ -17,10 +17,15 @@
     <section id="userInfo" class="container">
         <div class = "form-control">
             <span id = "userLogged" class="form-label">Logged in as : </span>
+        </div><br>
+        <div id="chat-window">
+            <ul id="chat-messages">
+                <!-- messages will be displayed here -->
+            </ul>
         </div>
     </section>
     <section class="container " >
-      <form id="my-form" class="form-control bg-body-tertiary"  action = '/send-message' method="post">
+      <form id="my-form" class="form-control bg-body-tertiary"  action = '/user/send-message' method="post">
         <label for="message" class = "form-label" style="font-weight: 600;">Enter message :</label> 
         <input type="text" id="message" name ="message" class="form-control" placeholder="Enter your message">
         <br>
