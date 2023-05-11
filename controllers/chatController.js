@@ -5,10 +5,12 @@ const Sequelize = require('sequelize')
 
 exports.chatMessage = async (req, res, next) => {
   try {
+    console.log("bodyof message is >>>>>>>" ,req.body)
     const message = req.body.userMessage;
     const chatMessage = await Chat.create({
       userId: req.user.id,
       chatMessage: message,
+      groupId : req.body.groupId
     });
     res.status(200).json({ chatMessage: chatMessage, message: "chat message sent" });
   } catch (error) {
@@ -21,8 +23,11 @@ exports.getMessage = async(req,res,next) =>{
     try{
       const lastMessageId = parseInt(req.query.lastMessageId) || 0;
       console.log("lastMessageID >>>>>>>>>>>>>>>>>>>>" , lastMessageId)
+      console.log("group id is >>>>",req.query.groupId)
+      const  groupId = req.query.groupId
       const userMessage = await Chat.findAll(
         {where:{
+          groupId : groupId,
           id:{
             [Sequelize.Op.gt] : lastMessageId
           },

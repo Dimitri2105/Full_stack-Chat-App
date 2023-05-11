@@ -16,19 +16,35 @@
     </header>
     <section id="userInfo" class="container">
         <span id = "userLogged" class="d-inline form-control">Logged in as : </span>
-        <span id = "sign-out-button" class="btn btn-secondary d-inline float-end">Sign Out</span>
-        <br><br><br>
-        <div id="chat-window">
+        <span id = "currentGroupName" class="d-inline form-control">Current Group: </span>
+        <span id = "sign-out-button" class="btn btn-secondary d-inline float-end ms-2">Sign Out</span>
+        <div id="group-list" class = "btn btn-secondary d-inline float-end ">
+          <span>Groups</span>
+        </div>
+        <br><br>
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-3">
+              <form id="groupInfo" class="form-control" action="/user/createGroup" method="post">
+                <label for="groupName" class="form-label" style="font-weight: 600;">Enter Group Name</label>
+                <input class="form-control" id="groupName" name="groupName" placeholder="Enter group name">
+                <input class="btn btn-outline-primary ms-2 mt-2" type="submit" value="Create Group">
+              </form>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="chat-window" class="col-4">
             <ul id="chat-messages">
                 <!-- messages will be displayed here -->
             </ul>
         </div>
     </section>
-    <section class="container " >
+    <section class="col-10" >
       <form id="my-form" class="form-control bg-body-tertiary"  action = '/user/send-message' method="post">
         
         <label for="message" class = "form-label" style="font-weight: 600;">Enter message :</label> 
-        <input type="text" id="message" name ="message" class="form-control" placeholder="Enter your message">
+        <input class="form-control" id="message" name ="message" placeholder="Enter your message">
         
         <br>
         <input class= "btn btn-outline-primary"type="submit" value="Send">
