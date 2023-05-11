@@ -8,9 +8,12 @@ dotenv.config()
 
 const userRoute = require('./routes/userRoutes')
 const chatRoute = require('./routes/chatRoutes')
+const groupRoute = require('./routes/groupRoutes')
 
 const User = require('./modals/userModal')
 const Chat = require('./modals/chatModal')
+const Group = require('./modals/groupModal')
+const userGroup = require('./modals/userGroupModal')
 
 
 const app = express()
@@ -27,10 +30,18 @@ app.use(express.static(path.join(__dirname, 'views')));
 
 app.use(userRoute)
 app.use(chatRoute)
+app.use(groupRoute)
 
 
 User.hasMany(Chat)
 Chat.belongsTo(User)
+
+Group.hasMany(Chat)
+Chat.belongsTo(User)
+
+User.belongsTo(Group , { through : userGroup})
+Group.belongsTo(User , { through : userGroup})
+
 
 sequelize
 .sync()

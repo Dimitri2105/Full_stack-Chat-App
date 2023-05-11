@@ -23,11 +23,11 @@ function saveToStorage(e) {
       localStorage.setItem("userName", response.data.username);
       alert("Successfull");
 
-      // ProceedToChat()
+      ProceedToChat()
       // getAllLoggedUsers()
       
 
-      window.location.href="../chat/chat.html"
+      // window.location.href="../chat/chat.html"
     })
     .catch((error) => {
       document.body.innerHTML =
@@ -66,7 +66,7 @@ async function getAllLoggedUsers() {
   }
 }
 window.addEventListener("load",() =>{
-    // getAllLoggedUsers();
+    getAllLoggedUsers();
   
 })
 
