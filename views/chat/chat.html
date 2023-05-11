@@ -18,21 +18,34 @@
         <span id = "userLogged" class="d-inline form-control">Logged in as : </span>
         <span id = "currentGroupName" class="d-inline form-control">Current Group: </span>
         <span id = "sign-out-button" class="btn btn-secondary d-inline float-end ms-2">Sign Out</span>
-        <div id="group-list" class = "btn btn-secondary d-inline float-end ">
+        <div id="group-list" class = "btn btn-secondary d-inline float-end  ms-2">
           <span>Groups</span>
         </div>
+        <div id="user-list" class = "btn btn-secondary d-inline float-end ">
+          <span>Active Users</span>
+        </div>
         <br><br>
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-3">
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="container">
               <form id="groupInfo" class="form-control" action="/user/createGroup" method="post">
-                <label for="groupName" class="form-label" style="font-weight: 600;">Enter Group Name</label>
+                <label for="groupName" class="form-label" style="font-weight: 600;">Create Group</label>
                 <input class="form-control" id="groupName" name="groupName" placeholder="Enter group name">
-                <input class="btn btn-outline-primary ms-2 mt-2" type="submit" value="Create Group">
+                <input class="btn btn-outline-primary ms-2 mt-2" type="submit" value="Create">
+              </form>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="container">
+              <form id="inviteUser" class="form-control" action="/user/inviteUser" method="post">
+                <label for="userName" class="form-label" style="font-weight: 600;">Invite User</label>
+                <input class="form-control" id="userName" name="userName" placeholder="Enter email ">
+                <input class="btn btn-outline-primary ms-2 mt-2" type="submit" value="Invite">
               </form>
             </div>
           </div>
         </div>
+        
         <br>
         <div id="chat-window" class="col-4">
             <ul id="chat-messages">

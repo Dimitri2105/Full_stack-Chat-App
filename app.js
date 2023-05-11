@@ -39,8 +39,11 @@ Chat.belongsTo(User)
 Group.hasMany(Chat)
 Chat.belongsTo(User)
 
-User.belongsTo(Group , { through : userGroup})
-Group.belongsTo(User , { through : userGroup})
+User.belongsToMany(Group , { through : userGroup})
+Group.belongsToMany(User , { through : userGroup})
+
+Group.hasMany(userGroup)
+userGroup.belongsTo(Group);
 
 
 sequelize

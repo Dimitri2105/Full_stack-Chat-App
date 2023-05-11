@@ -54,8 +54,8 @@ exports.logIn = async (req, res, next) => {
     } else {
       bcrypt.compare(password, user.password, (err, result) => {
         if (result === true) {
-          activeUsers[user.id] = user.userName
-          console.log("ACTIVE USER  are >>>>>>", activeUsers)
+          // activeUsers[user.id] = user.userName
+          // console.log("ACTIVE USER  are >>>>>>", activeUsers)
           res.status(200).json({ message: "User login successfull",token : generateToken({id:user.id , username :user.userName}) , username : user.userName});
         } else {
           res.status(401).json({ message: "User not authorized" });
@@ -69,7 +69,6 @@ exports.logIn = async (req, res, next) => {
 };
 
 exports.getAllUsers = async(req,res,next) =>{
-  console.log("inside logged users >>>>>")
   try {
     res.status(200).json({ activeUsers: Object.values(activeUsers)});
   } catch (error) {

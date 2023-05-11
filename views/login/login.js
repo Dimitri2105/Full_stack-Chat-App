@@ -66,7 +66,7 @@ async function getAllLoggedUsers() {
   }
 }
 window.addEventListener("load",() =>{
-    getAllLoggedUsers();
+    // getAllLoggedUsers();
   
 })
 

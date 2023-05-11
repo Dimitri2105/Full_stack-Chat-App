@@ -2,11 +2,14 @@ let userLogged = document.querySelector("#userLogged");
 let currentGroupInfo = document.querySelector("#currentGroupName");
 let myForm = document.querySelector("#my-form");
 let groupForm = document.querySelector("#groupInfo");
+let inviteForm = document.querySelector('#inviteUser')
 let message = document.querySelector("#message");
 let chatMessage = document.querySelector("#chat-messages");
 const signOutButton = document.querySelector("#sign-out-button");
 let createGroupName = document.querySelector("#groupName");
+let inviteUser = document.querySelector('#userName')
 let groupList = document.querySelector("#group-list");
+let users = document.querySelector("#user-list");
 
 const token = localStorage.getItem("token");
 const name = localStorage.getItem("userName");
@@ -15,14 +18,20 @@ const groupId = localStorage.getItem("groupId");
 
 userLogged.innerHTML = userLogged.innerHTML + `${name}`;
 
-if (groupName != null) {
-  currentGroupInfo.innerHTML = currentGroupInfo.innerHTML + `${groupName}`;
-} else {
+// if (groupName != null) {
+//   currentGroupInfo.innerHTML = currentGroupInfo.innerHTML + `${groupName}`;
+// } else {
+//   currentGroupInfo.innerHTML = "Select a Group";
+// }
+if (groupName == null) {
   currentGroupInfo.innerHTML = "Select a Group";
 }
 
+
 myForm.addEventListener("submit", saveToStorage);
 groupForm.addEventListener("submit", createGroup);
+inviteForm.addEventListener("submit" , inviteUserToGroup)
+users.addEventListener("click" , getActiveUsers)
 
 async function saveToStorage(e) {
   e.preventDefault();
@@ -92,6 +101,7 @@ window.addEventListener("DOMContentLoaded", () => {
   getChatMessages();
   getGroups();
   switchGroup(groupName, groupId);
+  // inviteUserToGroup(e)
 });
 
 // setInterval(getChatMessages,1000);
@@ -136,7 +146,9 @@ async function getGroups() {
     const groupId = localStorage.getItem("groupId");
     if (groupName && groupId) {
       getChatMessages(groupName, groupId);
-      currentGroupInfo.innerHTML = groupName;
+      // currentGroupInfo.innerHTML = groupName
+      currentGroupInfo.innerHTML = currentGroupInfo.innerHTML + `${groupName}`;
+
     }
   } catch (error) {
     console.log(error);
@@ -172,4 +184,52 @@ function addGroupToList(group) {
 
   groupDiv.innerHTML = `<button class = "btn btn-primary m-1" onclick="switchGroup('${group.groupName}','${group.id}')">${group.groupName}</button>`;
   groupList.appendChild(groupDiv);
+}
+
+async function getActiveUsers(){
+  try {
+    const response = await axios.get(
+      `http://localhost:8000/user/getActiveUsers`,
+      { headers : { Authorization : token }}
+    );
+    console.log(response.data.activeUsers);
+
+    // users.innerHTML = "";
+
+    response.data.activeUsers.forEach((user) => {
+      let listItem = document.createElement("div");
+      listItem.className = "users-list-items";
+      listItem.innerHTML = `<button class = "btn btn-primary m-1">${user.userName}</button>`;
+      users.appendChild(listItem);
+    });
+  } catch (error) {
+    document.body.innerHTML =
+      document.body.innerHTML + "<h3> Something Went Wrong </h3>";
+    console.log(error);
+  }
+}
+
+async function inviteUserToGroup(e){
+  e.preventDefault()
+  try{
+    const userEmail = inviteUser.value
+    console.log("Invited user email >>>" , userEmail)
+
+    const groupId = localStorage.getItem('groupId')
+
+    const response = await axios.post(
+      `http://localhost:8000/user/inviteUser`,
+      { userEmail, groupId },
+      { headers: { Authorization: token } }
+    );
+    alert("invite succesfull")
+
+    console.log("invited user info is >>>>>>" ,response)
+
+  }catch(error){
+    console.log(error)
+    document.body.innerHTML = document.body.innerHTML + 'Something Went Wrong'
+  }
+  inviteForm.reset()
+
 }
