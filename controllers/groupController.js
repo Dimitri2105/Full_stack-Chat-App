@@ -89,10 +89,12 @@ exports.inviteUser = async (req, res, next) => {
     if (!user) {
       res.status(400).json({ message: "User not found" });
     }
+    console.log(" user is <<<<<<<<<<<<<<<" , user )
     const group = await userGroup.findOne({ where: { groupId: groupId } });
     if (!group) {
       res.status(400).json({ message: "Group not found" });
     }
+    console.log("group is >>>>>" , group)
 
     const userGroups = await userGroup.create({
       userId: user.id,
@@ -136,3 +138,30 @@ exports.removeUser = async (req, res, next) => {
     res.status(400).json({ message: "Unable to remove User" });
   }
 };
+
+exports.makeAdmin = async(req,res,next) =>{
+  console.log("inside make admin >>>>>>>>>>..")
+  console.log("body is >>>>>>>" ,req.body)
+  try{
+
+    const email = req.body.email
+    const groupId = req.body.groupId
+
+    const user = await User.findOne( { where : { email : email }})
+
+    if(!user){
+      res.status(400).json({ message : "User not found"})
+    }
+
+    const newAdmin = await userGroup.update({  isAdmin : true } , { where : { userId : user.id , groupId : groupId } })
+
+    res.status(200).json({ message : " Admin created successfully "})
+
+
+  }
+  catch(error){
+    console.log(error);
+    res.status(400).json({ message: "Unable to make admin " });
+
+  }
+}

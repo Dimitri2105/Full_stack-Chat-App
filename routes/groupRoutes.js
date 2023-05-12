@@ -18,6 +18,8 @@ router.post('/user/inviteUser', userAuthentication.authenticate,groupController.
 
 router.delete('/user/removeUser',userAuthentication.authenticate,groupController.removeUser)
 
+router.post('/user/makeAdmin',userAuthentication.authenticate, groupController.makeAdmin)
+
 module.exports = router
 
 

@@ -3,7 +3,7 @@ let currentGroupInfo = document.querySelector("#currentGroupName");
 let myForm = document.querySelector("#my-form");
 let groupForm = document.querySelector("#groupInfo");
 let inviteForm = document.querySelector("#inviteUser");
-let removeForm = document.querySelector('#removeUser')
+let removeForm = document.querySelector("#removeUser");
 let message = document.querySelector("#message");
 let chatMessage = document.querySelector("#chat-messages");
 const signOutButton = document.querySelector("#sign-out-button");
@@ -11,7 +11,7 @@ let createGroupName = document.querySelector("#groupName");
 let inviteUser = document.querySelector("#userName");
 let groupList = document.querySelector("#group-list");
 let users = document.querySelector("#user-list");
-let deleteUser = document.querySelector('#deleteUser')
+let deleteUser = document.querySelector("#deleteUser");
 
 const token = localStorage.getItem("token");
 const name = localStorage.getItem("userName");
@@ -32,7 +32,7 @@ if (groupName == null) {
 myForm.addEventListener("submit", saveToStorage);
 groupForm.addEventListener("submit", createGroup);
 inviteForm.addEventListener("submit", inviteUserToGroup);
-removeForm.addEventListener("submit",removeUser)
+removeForm.addEventListener("submit", removeUser);
 users.addEventListener("click", getActiveUsers);
 
 async function saveToStorage(e) {
@@ -62,8 +62,8 @@ function addChatMessageOnScreen(message) {
   messageDiv.className = "form-control mt-1";
   messageDiv.innerHTML = `<b>${message.user.userName} : </b> ${message.chatMessage}`;
 
-  if(chatMessage.children.length % 2 === 0){
-    messageDiv.classList.add('bg-light');
+  if (chatMessage.children.length % 2 === 0) {
+    messageDiv.classList.add("bg-light");
   }
   chatMessage.appendChild(messageDiv);
 }
@@ -130,7 +130,7 @@ async function createGroup(e) {
 
     const response = await axios.post(
       `http://localhost:8000/user/createGroup`,
-      { groupName , isAdmin : true },
+      { groupName, isAdmin: true },
       { headers: { Authorization: token } }
     );
     addGroupToList(response.data.groupName.groupName);
@@ -202,14 +202,17 @@ async function getActiveUsers() {
       `http://localhost:8000/user/getActiveUsers`,
       { headers: { Authorization: token } }
     );
-    console.log(response.data.activeUsers);
 
-    // users.innerHTML = "";
+    users.innerHTML = "";
+
+    let heading = document.createElement("span");
+    heading.textContent = "Active Users";
+    users.appendChild(heading);
 
     response.data.activeUsers.forEach((user) => {
       let listItem = document.createElement("div");
       listItem.className = "users-list-items";
-      listItem.innerHTML = `<button class = "btn btn-primary m-1"><span title="${user.email}">${user.userName}</span></button>`;
+      listItem.innerHTML = `<button class="btn btn-primary m-1" onclick="makeAdmin('${user.email}')"><span title="${user.email}">${user.userName}</span></button>`;
       users.appendChild(listItem);
     });
   } catch (error) {
@@ -243,27 +246,33 @@ async function inviteUserToGroup(e) {
   inviteForm.reset();
 }
 
-
-async function removeUser (e){
-  e.preventDefault()
-  try{
-    console.log("inside user deletion function ")
-    const email = deleteUser.value
-    console.log(groupId)
-    const obj = { email , groupId}
-    const response = await axios.delete(`http://localhost:8000/user/removeUser?email=${email}&groupid=${groupId}`,
-    { headers : {Authorization : token } })
-
-    console.log("response of remove User  >>>>>" , response)
-
-    alert(`User with mail id : ${obj.email} removed`)
-
-
-  }
-  catch(error){
+async function removeUser(e) {
+  e.preventDefault();
+  try {
+    const email = deleteUser.value;
+    const obj = { email, groupId };
+    const response = await axios.delete(
+      `http://localhost:8000/user/removeUser?email=${email}&groupid=${groupId}`,
+      { headers: { Authorization: token } }
+    );
+    alert(`User with mail id : ${obj.email} removed`);
+  } catch (error) {
     console.log(error);
     document.body.innerHTML = document.body.innerHTML + "Something Went Wrong";
-
   }
+}
 
+async function makeAdmin(email) {
+  try {
+    const response = await axios.post(
+      `http://localhost:8000/user/makeAdmin`,
+      { email, groupId },
+      { headers: { Authorization: token } }
+    );
+    console.log(response);
+    alert(`User with mail id : ${email} is also Admin Now`);
+  } catch (error) {
+    console.log(error);
+    document.body.innerHTML = document.body.innerHTML + "Something Went Wrong";
+  }
 }
