@@ -206,7 +206,7 @@ async function getActiveUsers() {
     response.data.activeUsers.forEach((user) => {
       let listItem = document.createElement("div");
       listItem.className = "users-list-items";
-      listItem.innerHTML = `<button class = "btn btn-primary m-1">${user.userName}</button>`;
+      listItem.innerHTML = `<button class = "btn btn-primary m-1"><span title="${user.email}">${user.userName}</span></button>`;
       users.appendChild(listItem);
     });
   } catch (error) {
