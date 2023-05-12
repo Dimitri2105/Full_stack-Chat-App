@@ -2,12 +2,12 @@ let userLogged = document.querySelector("#userLogged");
 let currentGroupInfo = document.querySelector("#currentGroupName");
 let myForm = document.querySelector("#my-form");
 let groupForm = document.querySelector("#groupInfo");
-let inviteForm = document.querySelector('#inviteUser')
+let inviteForm = document.querySelector("#inviteUser");
 let message = document.querySelector("#message");
 let chatMessage = document.querySelector("#chat-messages");
 const signOutButton = document.querySelector("#sign-out-button");
 let createGroupName = document.querySelector("#groupName");
-let inviteUser = document.querySelector('#userName')
+let inviteUser = document.querySelector("#userName");
 let groupList = document.querySelector("#group-list");
 let users = document.querySelector("#user-list");
 
@@ -27,11 +27,10 @@ if (groupName == null) {
   currentGroupInfo.innerHTML = "Select a Group";
 }
 
-
 myForm.addEventListener("submit", saveToStorage);
 groupForm.addEventListener("submit", createGroup);
-inviteForm.addEventListener("submit" , inviteUserToGroup)
-users.addEventListener("click" , getActiveUsers)
+inviteForm.addEventListener("submit", inviteUserToGroup);
+users.addEventListener("click", getActiveUsers);
 
 async function saveToStorage(e) {
   e.preventDefault();
@@ -45,6 +44,7 @@ async function saveToStorage(e) {
       { userMessage, groupId },
       { headers: { Authorization: token } }
     );
+    console.log("sent message is >>>>", response.data);
 
     getChatMessages();
   } catch (error) {
@@ -56,8 +56,12 @@ async function saveToStorage(e) {
 }
 function addChatMessageOnScreen(message) {
   const messageDiv = document.createElement("div");
-  messageDiv.className = "form-control";
-  messageDiv.innerHTML = `<b>${name} : </b> ${message}`;
+  messageDiv.className = "form-control mt-1";
+  messageDiv.innerHTML = `<b>${message.user.userName} : </b> ${message.chatMessage}`;
+
+  if(chatMessage.children.length % 2 === 0){
+    messageDiv.classList.add('bg-light');
+  }
   chatMessage.appendChild(messageDiv);
 }
 
@@ -88,8 +92,12 @@ async function getChatMessages() {
       return message.groupId === groupId;
     });
 
+    switchGroup(groupName, groupId);
+
     filteredMessages.forEach((message) => {
-      addChatMessageOnScreen(message.chatMessage);
+      addChatMessageOnScreen(message);
+
+      // addChatMessageOnScreen(message.chatMessage);
     });
   } catch (error) {
     console.log(error);
@@ -148,7 +156,6 @@ async function getGroups() {
       getChatMessages(groupName, groupId);
       // currentGroupInfo.innerHTML = groupName
       currentGroupInfo.innerHTML = currentGroupInfo.innerHTML + `${groupName}`;
-
     }
   } catch (error) {
     console.log(error);
@@ -170,7 +177,7 @@ async function switchGroup(group, groupId) {
     chatMessage.innerHTML = "";
 
     messages.forEach((message) => {
-      addChatMessageOnScreen(message.chatMessage);
+      addChatMessageOnScreen(message);
     });
   } catch (error) {
     console.log(error);
@@ -186,11 +193,11 @@ function addGroupToList(group) {
   groupList.appendChild(groupDiv);
 }
 
-async function getActiveUsers(){
+async function getActiveUsers() {
   try {
     const response = await axios.get(
       `http://localhost:8000/user/getActiveUsers`,
-      { headers : { Authorization : token }}
+      { headers: { Authorization: token } }
     );
     console.log(response.data.activeUsers);
 
@@ -209,27 +216,26 @@ async function getActiveUsers(){
   }
 }
 
-async function inviteUserToGroup(e){
-  e.preventDefault()
-  try{
-    const userEmail = inviteUser.value
-    console.log("Invited user email >>>" , userEmail)
+async function inviteUserToGroup(e) {
+  e.preventDefault();
+  try {
+    const userEmail = inviteUser.value;
+    console.log("Invited user email >>>", userEmail);
 
-    const groupId = localStorage.getItem('groupId')
+    const groupId = localStorage.getItem("groupId");
 
     const response = await axios.post(
       `http://localhost:8000/user/inviteUser`,
       { userEmail, groupId },
       { headers: { Authorization: token } }
     );
-    alert("invite succesfull")
+    alert("invite succesfull");
+    // getChatMessages()
 
-    console.log("invited user info is >>>>>>" ,response)
-
-  }catch(error){
-    console.log(error)
-    document.body.innerHTML = document.body.innerHTML + 'Something Went Wrong'
+    console.log("invited user info is >>>>>>", response);
+  } catch (error) {
+    console.log(error);
+    document.body.innerHTML = document.body.innerHTML + "Something Went Wrong";
   }
-  inviteForm.reset()
-
+  inviteForm.reset();
 }
