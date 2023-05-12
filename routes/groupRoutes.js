@@ -16,6 +16,8 @@ router.get('/user/getActiveUsers' , userAuthentication.authenticate,groupControl
 
 router.post('/user/inviteUser', userAuthentication.authenticate,groupController.inviteUser)
 
+router.delete('/user/removeUser',userAuthentication.authenticate,groupController.removeUser)
+
 module.exports = router
 
 

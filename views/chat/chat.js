@@ -3,6 +3,7 @@ let currentGroupInfo = document.querySelector("#currentGroupName");
 let myForm = document.querySelector("#my-form");
 let groupForm = document.querySelector("#groupInfo");
 let inviteForm = document.querySelector("#inviteUser");
+let removeForm = document.querySelector('#removeUser')
 let message = document.querySelector("#message");
 let chatMessage = document.querySelector("#chat-messages");
 const signOutButton = document.querySelector("#sign-out-button");
@@ -10,6 +11,7 @@ let createGroupName = document.querySelector("#groupName");
 let inviteUser = document.querySelector("#userName");
 let groupList = document.querySelector("#group-list");
 let users = document.querySelector("#user-list");
+let deleteUser = document.querySelector('#deleteUser')
 
 const token = localStorage.getItem("token");
 const name = localStorage.getItem("userName");
@@ -30,6 +32,7 @@ if (groupName == null) {
 myForm.addEventListener("submit", saveToStorage);
 groupForm.addEventListener("submit", createGroup);
 inviteForm.addEventListener("submit", inviteUserToGroup);
+removeForm.addEventListener("submit",removeUser)
 users.addEventListener("click", getActiveUsers);
 
 async function saveToStorage(e) {
@@ -127,7 +130,7 @@ async function createGroup(e) {
 
     const response = await axios.post(
       `http://localhost:8000/user/createGroup`,
-      { groupName },
+      { groupName , isAdmin : true },
       { headers: { Authorization: token } }
     );
     addGroupToList(response.data.groupName.groupName);
@@ -238,4 +241,29 @@ async function inviteUserToGroup(e) {
     document.body.innerHTML = document.body.innerHTML + "Something Went Wrong";
   }
   inviteForm.reset();
+}
+
+
+async function removeUser (e){
+  e.preventDefault()
+  try{
+    console.log("inside user deletion function ")
+    const email = deleteUser.value
+    console.log(groupId)
+    const obj = { email , groupId}
+    const response = await axios.delete(`http://localhost:8000/user/removeUser?email=${email}&groupid=${groupId}`,
+    { headers : {Authorization : token } })
+
+    console.log("response of remove User  >>>>>" , response)
+
+    alert(`User with mail id : ${obj.email} removed`)
+
+
+  }
+  catch(error){
+    console.log(error);
+    document.body.innerHTML = document.body.innerHTML + "Something Went Wrong";
+
+  }
+
 }

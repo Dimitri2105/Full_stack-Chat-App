@@ -9,6 +9,8 @@ const jst = require("jsonwebtoken");
 
 exports.createGroup = async (req, res, next) => {
   const groupName = req.body.groupName;
+  const admin = req.body.isAdmin;
+  console.log("admin is >>>>>>", true);
 
   if (!groupName) {
     res.status(400).json({ message: "Required Group Name" });
@@ -21,7 +23,9 @@ exports.createGroup = async (req, res, next) => {
     const userGroupInfo = await userGroup.create({
       userId: req.user.id,
       groupId: groupCreated.id,
+      isAdmin: admin,
     });
+    console.log("userInfo is >>>>>>", userGroupInfo);
     res
       .status(200)
       .json({ message: "Successfully created group", groupName: groupCreated });
@@ -100,5 +104,35 @@ exports.inviteUser = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(400).json({ message: "Unable to Invite User" });
+  }
+};
+
+exports.removeUser = async (req, res, next) => {
+  try {
+    const email = req.query.email;
+    const groupid = req.query.groupid;
+
+    const checkAdmin = await userGroup.findOne({
+      where: { userId: req.user.id, groupId: groupid },
+    });
+
+    if (checkAdmin === 0) {
+      res.status(400).json({ message: " Admin permission required" });
+    }
+
+    const userToDelete = await User.findOne({ where: { email: email } });
+
+    const response = await userGroup.destroy({
+      where: { userId: userToDelete.id, groupId: groupid },
+    });
+
+    if (response == 0) {
+      return res.status(404).json({ message: "User not present in the group" });
+    }
+
+    res.status(200).json({ message: "User deletion succesfull" });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "Unable to remove User" });
   }
 };
