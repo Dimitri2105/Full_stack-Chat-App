@@ -27,6 +27,8 @@
     "mysql2": "^3.2.4",
     "nodemon": "^2.0.22",
     "parser": "^0.1.4",
-    "sequelize": "^6.31.1"
+    "sequelize": "^6.31.1",
+    "socket.io": "^4.6.1",
+    "socket.io-client": "^4.6.1"
   }
 }

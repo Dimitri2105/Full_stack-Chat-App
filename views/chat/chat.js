@@ -1,3 +1,16 @@
+
+const socket = io('http://localhost:8000')
+
+socket.on('connect' , () =>{
+  console.log("Socket connection initiated from frontend")
+})
+
+socket.on("receive Message"  , ({chatMessage}) =>{
+  console.log("Inside chat Message frontend")
+  console.log("chatMessage is >>>>" , chatMessage)
+  // console.log("message is >>>>>>" , message)
+})
+
 let userLogged = document.querySelector("#userLogged");
 let currentGroupInfo = document.querySelector("#currentGroupName");
 let myForm = document.querySelector("#my-form");
@@ -41,15 +54,18 @@ async function saveToStorage(e) {
     const userMessage = message.value;
     const groupName = localStorage.getItem("groupName");
     const groupId = localStorage.getItem("groupId");
+    const token = localStorage.getItem("token")
 
-    const response = await axios.post(
-      `http://localhost:8000/user/send-message`,
-      { userMessage, groupId },
-      { headers: { Authorization: token } }
-    );
-    console.log("sent message is >>>>", response.data);
+    // const response = await axios.post(
+    //   `http://localhost:8000/user/send-message`,
+    //   { userMessage, groupId },
+    //   { headers: { Authorization: token } }
+    // );
+    // console.log("sent message is >>>>", response.data);
+    console.log("Just Before Emitting message >>>>>>>>>>>>")
+    socket.emit("chatMessage" , {group : groupId , message : userMessage , token : token})
 
-    getChatMessages();
+    // getChatMessages();
   } catch (error) {
     console.log(error);
     document.body.innerHTML =
@@ -102,6 +118,7 @@ async function getChatMessages() {
 
       // addChatMessageOnScreen(message.chatMessage);
     });
+
   } catch (error) {
     console.log(error);
     document.body.innerHTML =
@@ -158,7 +175,8 @@ async function getGroups() {
     if (groupName && groupId) {
       getChatMessages(groupName, groupId);
       // currentGroupInfo.innerHTML = groupName
-      currentGroupInfo.innerHTML = currentGroupInfo.innerHTML + `${groupName}`;
+      
+        currentGroupInfo.innerHTML = currentGroupInfo.innerHTML + `${groupName}`;
     }
   } catch (error) {
     console.log(error);
