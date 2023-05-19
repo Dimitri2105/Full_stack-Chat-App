@@ -1,6 +1,6 @@
 const AWS = require("aws-sdk");
 
-module.exports.uploadToS3 = function (data, filename) {
+module.exports.uploadToS3 = function (file) {
   const BUCKET_NAME = "groupchatapplicationdemo";
   const IAM_USER_KEY = "AKIAYFGA4UE3UUT2Y4SZ";
   const IAM_USER_SECRET = "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";
@@ -12,8 +12,8 @@ module.exports.uploadToS3 = function (data, filename) {
 
   var params = {
     Bucket: BUCKET_NAME,
-    Body: data,
-    Key: filename,
+    Body: file.buffer,
+    Key: file.originalname,
     ACL: "public-read",
   };
 

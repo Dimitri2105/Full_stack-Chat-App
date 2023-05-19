@@ -9,6 +9,9 @@ const Sequelize = require("sequelize");
 const bcrypt = require("bcrypt");
 const jst = require("jsonwebtoken");
 
+const multer = require('multer')
+const upload = multer()
+
 exports.createGroup = async (req, res, next) => {
   const groupName = req.body.groupName;
   const admin = req.body.isAdmin;
@@ -168,22 +171,28 @@ exports.makeAdmin = async(req,res,next) =>{
   }
 }
 
-exports.sendMedia = async(req,res,next) =>{
-  console.log("?>>>>>>>>>>>>>INSIDE SEND MEDIA BACKEND >>>>>>>>>>>>")
-  try{
-    // const userId = req.user.id
-    // console.log("USER ID IS >>>>>>>>>>>>>>>>" , userId)
-    const filename = `Media/${new Date()}.txt`
-    const fileSend = await s3Services.uploadToS3('Media/car.jpg ', filename)
+const uploadMedia = upload.single('file');
 
-    console.log("file sent is >>>>>>>>>>" , fileSend)
+exports.sendMedia = async (req, res, next) => {
+  try {
+    uploadMedia(req, res, async (err) => {
+      if (err instanceof multer.MulterError) {
+        console.error(err);
+        return res.status(400).json({ message: 'Error uploading file' });
+      } else if (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Something went wrong' });
+      }
 
-    res.status(200).json({ fileSend,success: true });
+      const filename = `Media/${new Date()}.txt`;
+      const fileSend = await s3Services.uploadToS3(req.file);
 
+      console.log('file sent is >>>>>>>>>>', fileSend);
 
-  }catch(error){
+      res.status(200).json({ fileSend, success: true });
+    });
+  } catch (error) {
     console.log(error);
-    res.status(400).json({ message: "Unable to send media " });
-
+    res.status(400).json({ message: 'Unable to send media' });
   }
-}
+};

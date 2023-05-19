@@ -4,6 +4,7 @@ const groupController = require('../controllers/groupController')
 const userAuthentication = require('../middleware/auth')
 const { route } = require('./chatRoutes')
 
+
 const router = express.Router()
 
 router.post('/user/createGroup',userAuthentication.authenticate,groupController.createGroup)
@@ -19,8 +20,6 @@ router.post('/user/inviteUser', userAuthentication.authenticate,groupController.
 router.delete('/user/removeUser',userAuthentication.authenticate,groupController.removeUser)
 
 router.post('/user/makeAdmin',userAuthentication.authenticate, groupController.makeAdmin)
-
-// router.post('/user/uploadMedia', userAuthentication.authenticate ,groupController.sendMedia)
 
 router.post('/user/uploadMedia',groupController.sendMedia)
 

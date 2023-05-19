@@ -1,9 +1,8 @@
+const socket = io("http://localhost:8000");
 
-const socket = io('http://localhost:8000')
-
-socket.on('connect' , () =>{
-  console.log("Socket connection initiated from frontend")
-})
+socket.on("connect", () => {
+  console.log("Socket connection initiated from frontend");
+});
 
 // socket.on("receive Message"  , ({chatMessage}) =>{
 //   console.log("Inside chat Message frontend")
@@ -25,8 +24,8 @@ let inviteUser = document.querySelector("#userName");
 let groupList = document.querySelector("#group-list");
 let users = document.querySelector("#user-list");
 let deleteUser = document.querySelector("#deleteUser");
-let sendMedia = document.querySelector("#sendFile")
-
+let fileInput = document.getElementById("file-input");
+let sendMedia = document.querySelector("#sendFile");
 
 const token = localStorage.getItem("token");
 const name = localStorage.getItem("userName");
@@ -49,8 +48,7 @@ groupForm.addEventListener("submit", createGroup);
 inviteForm.addEventListener("submit", inviteUserToGroup);
 removeForm.addEventListener("submit", removeUser);
 users.addEventListener("click", getActiveUsers);
-sendMedia.addEventListener("click" , sendMediaFiles)
-
+sendMedia.addEventListener("click", sendMediaFiles);
 
 async function saveToStorage(e) {
   e.preventDefault();
@@ -58,7 +56,7 @@ async function saveToStorage(e) {
     const userMessage = message.value;
     const groupName = localStorage.getItem("groupName");
     const groupId = localStorage.getItem("groupId");
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
 
     const response = await axios.post(
       `http://localhost:8000/user/send-message`,
@@ -122,7 +120,6 @@ async function getChatMessages() {
 
       // addChatMessageOnScreen(message.chatMessage);
     });
-
   } catch (error) {
     console.log(error);
     document.body.innerHTML =
@@ -179,8 +176,8 @@ async function getGroups() {
     if (groupName && groupId) {
       getChatMessages(groupName, groupId);
       // currentGroupInfo.innerHTML = groupName
-      
-        currentGroupInfo.innerHTML = currentGroupInfo.innerHTML + `${groupName}`;
+
+      currentGroupInfo.innerHTML = currentGroupInfo.innerHTML + `${groupName}`;
     }
   } catch (error) {
     console.log(error);
@@ -299,19 +296,19 @@ async function makeAdmin(email) {
   }
 }
 
-async function sendMediaFiles(){
-  try{
-    console.log("inside SEND MEDIA >>>>>>>>>>>>>.")
-    
+async function sendMediaFiles() {
+  try {
+    const file = fileInput.files[0];
+    const mediaSent = new FormData();
+    mediaSent.append("file", file);
+
     const response = await axios.post(
       `http://localhost:8000/user/uploadMedia`,
+      mediaSent
     );
-    console.log(response)
-    alert('File uploaded to S3 Successfully')
-
-
-  }catch(error){
-    console.log(error)
+    alert("File uploaded to S3 Successfully");
+  } catch (error) {
+    console.log(error);
     document.body.innerHTML = document.body.innerHTML + "Something Went Wrong";
   }
 }
