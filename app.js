@@ -65,7 +65,7 @@ userGroup.belongsTo(Group);
 io.on("connection" , (socket) =>{
     console.log(`User is connected with socket ID : ${socket.id}`)
 
-    chatController.respond(socket)
+    // chatController.respond(socket)
 
     // socket.on("chatMessage" , (obj) =>{
     //     console.log("chatMEssage receieved on server side >>>>>>>>>>>>>>>")

@@ -20,6 +20,10 @@ router.delete('/user/removeUser',userAuthentication.authenticate,groupController
 
 router.post('/user/makeAdmin',userAuthentication.authenticate, groupController.makeAdmin)
 
+// router.post('/user/uploadMedia', userAuthentication.authenticate ,groupController.sendMedia)
+
+router.post('/user/uploadMedia',groupController.sendMedia)
+
 module.exports = router
 
 

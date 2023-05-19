@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Dimitri2105/Full_stack-Chat-App#readme",
   "dependencies": {
+    "aws-sdk": "^2.1379.0",
     "bcrypt": "^5.1.0",
     "body": "^5.1.0",
     "cors": "^2.8.5",

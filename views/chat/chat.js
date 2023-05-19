@@ -5,11 +5,11 @@ socket.on('connect' , () =>{
   console.log("Socket connection initiated from frontend")
 })
 
-socket.on("receive Message"  , ({chatMessage}) =>{
-  console.log("Inside chat Message frontend")
-  console.log("chatMessage is >>>>" , chatMessage)
-  // console.log("message is >>>>>>" , message)
-})
+// socket.on("receive Message"  , ({chatMessage}) =>{
+//   console.log("Inside chat Message frontend")
+//   console.log("chatMessage is >>>>" , chatMessage)
+//   // console.log("message is >>>>>>" , message)
+// })
 
 let userLogged = document.querySelector("#userLogged");
 let currentGroupInfo = document.querySelector("#currentGroupName");
@@ -25,6 +25,8 @@ let inviteUser = document.querySelector("#userName");
 let groupList = document.querySelector("#group-list");
 let users = document.querySelector("#user-list");
 let deleteUser = document.querySelector("#deleteUser");
+let sendMedia = document.querySelector("#sendFile")
+
 
 const token = localStorage.getItem("token");
 const name = localStorage.getItem("userName");
@@ -47,6 +49,8 @@ groupForm.addEventListener("submit", createGroup);
 inviteForm.addEventListener("submit", inviteUserToGroup);
 removeForm.addEventListener("submit", removeUser);
 users.addEventListener("click", getActiveUsers);
+sendMedia.addEventListener("click" , sendMediaFiles)
+
 
 async function saveToStorage(e) {
   e.preventDefault();
@@ -56,16 +60,16 @@ async function saveToStorage(e) {
     const groupId = localStorage.getItem("groupId");
     const token = localStorage.getItem("token")
 
-    // const response = await axios.post(
-    //   `http://localhost:8000/user/send-message`,
-    //   { userMessage, groupId },
-    //   { headers: { Authorization: token } }
-    // );
-    // console.log("sent message is >>>>", response.data);
-    console.log("Just Before Emitting message >>>>>>>>>>>>")
-    socket.emit("chatMessage" , {group : groupId , message : userMessage , token : token})
+    const response = await axios.post(
+      `http://localhost:8000/user/send-message`,
+      { userMessage, groupId },
+      { headers: { Authorization: token } }
+    );
+    console.log("sent message is >>>>", response.data);
+    // console.log("Just Before Emitting message >>>>>>>>>>>>")
+    // socket.emit("chatMessage" , {group : groupId , message : userMessage , token : token})
 
-    // getChatMessages();
+    getChatMessages();
   } catch (error) {
     console.log(error);
     document.body.innerHTML =
@@ -291,6 +295,23 @@ async function makeAdmin(email) {
     alert(`User with mail id : ${email} is also Admin Now`);
   } catch (error) {
     console.log(error);
+    document.body.innerHTML = document.body.innerHTML + "Something Went Wrong";
+  }
+}
+
+async function sendMediaFiles(){
+  try{
+    console.log("inside SEND MEDIA >>>>>>>>>>>>>.")
+    
+    const response = await axios.post(
+      `http://localhost:8000/user/uploadMedia`,
+    );
+    console.log(response)
+    alert('File uploaded to S3 Successfully')
+
+
+  }catch(error){
+    console.log(error)
     document.body.innerHTML = document.body.innerHTML + "Something Went Wrong";
   }
 }

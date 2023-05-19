@@ -3,6 +3,8 @@ const Chat = require("../modals/chatModal");
 const Group = require("../modals/groupModal");
 const userGroup = require("../modals/userGroupModal");
 
+const s3Services = require("../services/s3Services")
+
 const Sequelize = require("sequelize");
 const bcrypt = require("bcrypt");
 const jst = require("jsonwebtoken");
@@ -162,6 +164,26 @@ exports.makeAdmin = async(req,res,next) =>{
   catch(error){
     console.log(error);
     res.status(400).json({ message: "Unable to make admin " });
+
+  }
+}
+
+exports.sendMedia = async(req,res,next) =>{
+  console.log("?>>>>>>>>>>>>>INSIDE SEND MEDIA BACKEND >>>>>>>>>>>>")
+  try{
+    // const userId = req.user.id
+    // console.log("USER ID IS >>>>>>>>>>>>>>>>" , userId)
+    const filename = `Media/${new Date()}.txt`
+    const fileSend = await s3Services.uploadToS3('Media/car.jpg ', filename)
+
+    console.log("file sent is >>>>>>>>>>" , fileSend)
+
+    res.status(200).json({ fileSend,success: true });
+
+
+  }catch(error){
+    console.log(error);
+    res.status(400).json({ message: "Unable to send media " });
 
   }
 }
