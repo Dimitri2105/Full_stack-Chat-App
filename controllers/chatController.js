@@ -1,9 +1,10 @@
 const Chat = require("../modals/chatModal");
 const User = require("../modals/userModal");
 
+const archivedChat = require("../modals/archivedChatModal");
 const Sequelize = require("sequelize");
 const jwt = require('jsonwebtoken')
-
+const CronJob = require('cron').CronJob;
 
 exports.chatMessage = async (req, res, next) => {
   try {
@@ -45,6 +46,41 @@ exports.getMessage = async (req, res, next) => {
     res.status(400).json({ message: "Unable to fetch messages" });
   }
 };
+
+const archivedMessages = async() =>{
+  console.log("inside ARCHIVED MESSAGES >>>>>>>>>>>>>>")
+  try{
+    const onedayAgo = new Date( Date.now() - 24 * 60 * 60 * 1000)
+    console.log("ONE DAY AGO >>>>>>>>>>>>>>>>>>>>>>" , onedayAgo)
+
+    const oldMessages = await Chat.findAll({where : { 
+      createdAt : {
+        [Sequelize.Op.lt]: onedayAgo
+      }
+    }})
+    console.log("ONE DAY AGO MESSAGES ARE >>>>>>" , oldMessages)
+
+    const archivedMessages = await archivedChat.bulkCreate(oldMessages)
+
+    console.log("arhivedMesses are >>>>>>>" , archivedMessages)
+
+    const removeOldMessages = await Chat.destroy({where : {
+      createdAt : {
+        [Sequelize.Op.lt]: onedayAgo
+      }
+    }})
+
+    console.log("deleted messages are >>>>>>>>" , removeOldMessages)
+
+  }
+  catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "Unable to archive messages" });}
+  
+}
+
+const job = new CronJob('0 11 * * *', archivedMessages)
+job.start()
 
 
 // exports.respond = async(socket_Io) =>{

@@ -176,15 +176,14 @@ const uploadMedia = upload.single('file');
 exports.sendMedia = async (req, res, next) => {
   try {
     uploadMedia(req, res, async (err) => {
-      if (err instanceof multer.MulterError) {
-        console.error(err);
-        return res.status(400).json({ message: 'Error uploading file' });
-      } else if (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'Something went wrong' });
-      }
+      // if (err instanceof multer.MulterError) {
+      //   console.error(err);
+      //   return res.status(400).json({ message: 'Error uploading file' });
+      // } else if (err) {
+      //   console.error(err);
+      //   return res.status(500).json({ message: 'Something went wrong' });
+      // }
 
-      const filename = `Media/${new Date()}.txt`;
       const fileSend = await s3Services.uploadToS3(req.file);
 
       console.log('file sent is >>>>>>>>>>', fileSend);
